@@ -10,7 +10,7 @@ import {
 } from './ContactForm.styled';
 
 const PhonebookSchema = Yup.object().shape({
-  name: Yup.string().min(3).required('Name number is required'),
+  name: Yup.string().min(3).required('Name is required'),
   number: Yup.string()
     .matches(
       /^\d{3}-\d{2}-\d{2}$/,
