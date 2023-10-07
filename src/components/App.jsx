@@ -1,5 +1,8 @@
 import { Component } from 'react';
 import { ContactForm } from './ContactForm/ContactForm';
+import { Filter } from './Filter/Filter';
+import { ContactList } from './ContactList/ContactList';
+import { AppContainer, Subtitle, Title } from './App.styled';
 
 export class App extends Component {
   state = {
@@ -12,56 +15,38 @@ export class App extends Component {
     this.setState({ [name]: value });
   };
 
-  // handleSubmit = evt => {
-  //   evt.preventDefault();
-  //   const newContact = {
-  //     name: this.state.name,
-  //     number: this.state.number,
-  //     id: nanoid(),
-  //   };
-  //   this.setState(prevState => ({
-  //     contacts: [...prevState.contacts, newContact],
-  //     name: '',
-  //     number: '',
-  //   }));
-  // };
-
   handleAddContact = newContact => {
     this.setState(prevState => ({
       contacts: [...prevState.contacts, newContact],
     }));
   };
 
+  deleteContact = id => {
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(contact => contact.id !== id),
+    }));
+  };
+
   render() {
-    const { name, number, filter, contacts } = this.state;
+    const { filter, contacts } = this.state;
     const filteredContacts = contacts.filter(contact =>
       contact.name.toLowerCase().includes(filter.toLowerCase())
     );
 
     return (
-      <div>
-        <h1>Phonebook</h1>
-        <ContactForm onSubmit={this.handleAddContact} />
-        <h2>Contacts</h2>
-        {/* <Filter /> */}
-        <p>Find contacts by name</p>
-        <input
-          type="text"
-          name="filter"
-          placeholder="Enter name to find"
-          value={filter}
-          onChange={this.handleChange}
+      <AppContainer>
+        <Title>Phonebook</Title>
+        <ContactForm
+          onFormSubmit={this.handleAddContact}
+          currentContacts={contacts}
         />
-        {/* <ContactList /> */}
-
-        <ul>
-          {filteredContacts.map(contact => (
-            <li key={contact.id}>
-              {contact.name} {contact.number}
-            </li>
-          ))}
-        </ul>
-      </div>
+        <Subtitle>Contacts</Subtitle>
+        <Filter value={filter} onChange={this.handleChange} />
+        <ContactList
+          contacts={filteredContacts}
+          onDelete={this.deleteContact}
+        />
+      </AppContainer>
     );
   }
 }
